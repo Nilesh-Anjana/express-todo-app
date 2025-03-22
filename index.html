@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>To-Do App</title>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f4f4f4;
+            padding: 20px;
+        }
+        .container {
+            max-width: 400px;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin: auto;
+        }
+        input {
+            width: 65%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        button {
+            padding: 10px;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+            margin: 5px;
+        }
+        .add-btn {
+            background: #28a745;
+            color: white;
+        }
+        .delete-btn {
+            background: #dc3545;
+            color: white;
+        }
+        .todo-item {
+            display: flex;
+            justify-content: space-between;
+            background: #e9ecef;
+            padding: 10px;
+            margin-top: 10px;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h1>To-Do List</h1>
+    <div class="container">
+        <input type="text" id="todoInput" placeholder="Enter a task" />
+        <button class="add-btn" id="addBtn">Add Task</button>
+        <div id="todoList"></div>
+    </div>
+
+    <script>
+        const API_URL = "http://localhost:3000/todos";
+
+        document.addEventListener("DOMContentLoaded", () => {
+            document.getElementById("addBtn").addEventListener("click", addTodo);
+            fetchTodos(); // Load tasks on page load
+        });
+
+        // Fetch and display todos
+        async function fetchTodos() {
+            try {
+                const response = await axios.get(API_URL);
+                const todos = response.data;
+                const todoList = document.getElementById("todoList");
+                todoList.innerHTML = "";
+
+                if (todos.length === 0) {
+                    todoList.innerHTML = "<p>No tasks available.</p>";
+                    return;
+                }
+
+                todos.forEach(todo => {
+                    const todoItem = document.createElement("div");
+                    todoItem.classList.add("todo-item");
+                    todoItem.innerHTML = `
+                        <span>${todo.id}. ${todo.task}</span>
+                        <button class="delete-btn" onclick="deleteTodo(${todo.id})">X</button>
+                    `;
+                    todoList.appendChild(todoItem);
+                });
+            } catch (error) {
+                console.error("Error fetching todos:", error);
+            }
+        }
+
+        // Add a new task
+        async function addTodo() {
+            const task = document.getElementById("todoInput").value.trim();
+            if (!task) {
+                alert("Please enter a task");
+                return;
+            }
+            try {
+                await axios.post(API_URL, { task });
+                document.getElementById("todoInput").value = "";
+                fetchTodos();
+            } catch (error) {
+                console.error("Error adding todo:", error);
+            }
+        }
+
+        // Delete a task
+        async function deleteTodo(id) {
+            try {
+                await axios.delete(`${API_URL}/${id}`);
+                fetchTodos();
+            } catch (error) {
+                console.error("Error deleting todo:", error);
+            }
+        }
+    </script>
+</body>
+</html>
