@@ -1,2 +1,9 @@
 # express-todo-app
-A simple To-Do app built with Express.js and vanilla JavaScript, featuring task management via a web UI and RESTful API. Supports adding, deleting, and fetching tasks with automatic ID reordering.
+A simple and lightweight To-Do application built using Node.js, Express.js, and vanilla JavaScript. This app provides a clean UI for managing tasks and supports RESTful API endpoints for adding, deleting, and retrieving tasks via Postman.
+
+Features:
+✅ Add, View, and Delete Tasks via Web UI
+✅ RESTful API for task management (GET, POST, DELETE)
+✅ Automatic ID Reordering after deletions
+✅ Axios for API Calls in the Frontend
+✅ Express.js Backend with CORS and Body-Parser
